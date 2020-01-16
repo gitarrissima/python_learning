@@ -26,10 +26,11 @@ class LogAnalyser:
             for line in file:
                 chunks = line.split()
                 url = chunks[6]
-                req_time = float(chunks[-1])
-                if self._validate_log_parsing():
+                req_time = chunks[-1]
+                if self._validate_log_parsing(url, req_time):
                     # TODO
                     pass
+                req_time = float(req_time)
 
                 if url not in self._urls_stat:
                     self._urls_stat[url] = list()
@@ -56,8 +57,14 @@ class LogAnalyser:
             row['time_med'] = median(url_req_times)
             self._report_table.append(row)
 
-    def _validate_log_parsing(self):
-        #TODO
+    def _validate_log_parsing(self, url: str, req_time: str):
+        if '/' not in url:
+            return False
+        try:
+            float(req_time)
+        except ValueError:
+            #TODO
+            return False
         return True
 
     def _render_report_template(self) -> None:
