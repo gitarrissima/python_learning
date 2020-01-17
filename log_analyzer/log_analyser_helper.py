@@ -3,6 +3,8 @@ import os
 import datetime
 import gzip
 import shutil
+import logging
+logger = logging.getLogger(__name__)
 
 
 class LogAnalyserHelper:
@@ -19,13 +21,12 @@ class LogAnalyserHelper:
         log_filename_template = os.path.join(self._log_dir, "nginx-access-ui.log-*")
         log_file_pathes = glob.glob(log_filename_template)
         if len(log_file_pathes) == 0:
-            # TODO
-            return
+            return None
         latest_log = log_file_pathes[0]
         latest_date = self._get_file_timestamp(log_file_pathes[0])
         for file_path in log_file_pathes:
             timestamp = self._get_file_timestamp(file_path)
-            if timestamp < latest_date:
+            if timestamp > latest_date:
                 latest_log = file_path
                 latest_date = timestamp
 
@@ -49,14 +50,16 @@ class LogAnalyserHelper:
         return os.path.exists(self._report_file_path)
 
     def decompress_log_file(self) -> str:
+        # TODO избавиться от этой функции
         """ Function checks that file is archive
             If so function decompress file 
             and returns new file name without gz extension """
 
         with gzip.open(self._log_file_path, 'rb') as input_file:
+            file_content = input_file.read()
             new_report_file_path, gz_extension = os.path.splitext(self._log_file_path)
             with open(new_report_file_path, 'wb') as output_file:
-                shutil.copy(input_file, output_file)
+                output_file.write(file_content)
             self._log_file_path = new_report_file_path
             return self._log_file_path
 

@@ -1,6 +1,7 @@
 import copy
 import configparser
-
+import logging
+logger = logging.getLogger(__name__)
 
 class LogAnalyserConfigurator:
     """ Class to calculate Log Analyzer config """
@@ -14,10 +15,14 @@ class LogAnalyserConfigurator:
             Combine default config and params from file
             Returns dict with actual config """
 
-        params_from_file = self._parse_params()
-        config = copy.copy(self._default_config)
-        config.update(params_from_file)
-        return config
+        try:
+            params_from_file = self._parse_params()
+            config = copy.copy(self._default_config)
+            config.update(params_from_file)
+            return config
+        except Exception as e:
+            logger.exception(e)
+            raise
 
     def _parse_params(self) -> dict:
         """ Function to parse params from self._config_file
