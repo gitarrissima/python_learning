@@ -32,7 +32,16 @@ class LogAnalyserConfigurator:
             config_string = self._get_config_string()
             parser = configparser.ConfigParser()
             parser.read_string(config_string)
-            return dict(parser.items('Default'))
+            config = dict()
+            if parser.has_option('Default', 'log_dir'):
+                config['log_dir'] = parser.get('Default', 'log_dir')
+            if parser.has_option('Default', 'report_dir'):
+                config['report_dir'] = parser.get('Default', 'report_dir')
+            if parser.has_option('Default', 'report_size'):
+                config['report_size'] = parser.getint('Default', 'report_size')
+            if parser.has_option('Default', 'max_error_count'):
+                config['max_error_count'] = parser.getint('Default', 'max_error_count')
+            return config
         except Exception:
             raise
 
