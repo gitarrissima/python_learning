@@ -14,10 +14,11 @@ default_config = {
 parser = argparse.ArgumentParser(description="Log analyser commandline parser")
 parser.add_argument('--config', default='./config')
 parser.add_argument('--log_file', default=None)
-parser.add_argument('--log_level', default=logging.INFO, choices=[logging.INFO, logging.ERROR])
+parser.add_argument('--log_level', default=logging.getLevelName(logging.INFO),
+                    choices=[logging.getLevelName(x) for x in [logging.DEBUG, logging.INFO, logging.ERROR]])
 ns = parser.parse_args()
 
-logging.basicConfig(filename=ns.log_file, filemode='w', level=ns.log_level,
+logging.basicConfig(filename=ns.log_file, filemode='w', level=getattr(logging, ns.log_level),
                     format='[%(asctime)s] %(levelname).1s %(message)s', datefmt='%Y.%m.%d %H:%M:%S')
 logger = logging.getLogger(__name__)
 
@@ -38,9 +39,6 @@ try:
     if log_analyzer_helper.check_report_file_already_exists():
         logger.info(f'Latest log {log_file_path} was already processed. Report is here: {report_file_path}')
         sys.exit(0)
-
-    if log_file_path.endswith('gz'):
-        log_file_path = log_analyzer_helper.decompress_log_file()
 
     log_analyser = LogAnalyser(config, log_file_path, report_file_path)
     log_analyser.analyse_log()

@@ -1,6 +1,7 @@
 from statistics import mean, median
 import json
 import logging
+import gzip
 logger = logging.getLogger(__name__)
 
 
@@ -26,7 +27,8 @@ class LogAnalyser:
     def _process_log_file(self) -> None:
         """ Processing log file line by line """
 
-        with open(self._log_file_path, encoding='utf-8') as file:
+        opener = gzip.open if self._log_file_path.endswith('gz') else open
+        with opener(self._log_file_path, encoding='utf-8') as file:
             for line in file:
                 result, url, req_time = self._parse_log_line(line)
 
@@ -93,12 +95,12 @@ class LogAnalyser:
             req_time should be possible to convert to float """
 
         if '/' not in url:
-            logger.info(f'Input data problems: {url} is not considered url')
+            logger.debug(f'Input data problems: {url} is not considered as url')
             return False
         try:
             float(req_time)
         except ValueError:
-            logger.info(f'Input data problems: {req_time} couldn\'t be converted to float')
+            logger.debug(f'Input data problems: {req_time} couldn\'t be converted to float')
             return False
 
         return True

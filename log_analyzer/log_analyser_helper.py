@@ -1,8 +1,6 @@
 import glob
 import os
 import datetime
-import gzip
-import shutil
 import logging
 logger = logging.getLogger(__name__)
 
@@ -48,20 +46,6 @@ class LogAnalyserHelper:
             If file with report name already exists, returns True"""
 
         return os.path.exists(self._report_file_path)
-
-    def decompress_log_file(self) -> str:
-        # TODO избавиться от этой функции
-        """ Function checks that file is archive
-            If so function decompress file 
-            and returns new file name without gz extension """
-
-        with gzip.open(self._log_file_path, 'rb') as input_file:
-            file_content = input_file.read()
-            new_report_file_path, gz_extension = os.path.splitext(self._log_file_path)
-            with open(new_report_file_path, 'wb') as output_file:
-                output_file.write(file_content)
-            self._log_file_path = new_report_file_path
-            return self._log_file_path
 
     @staticmethod
     def _get_file_timestamp(filename: str) -> int:
