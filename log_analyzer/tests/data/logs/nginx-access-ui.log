@@ -2,7 +2,7 @@
 1.1.1.1 - - [date timezone] "GET /url2   HTTP/1.1" "-" "-" "-" "-" "-" "-" "-" 0.2
 1.1.1.1 - - [date timezone] "GET /url3   HTTP/1.1" "-" "-" "-" "-" "-" "-" "-" 0.3
 1.1.1.1 - - [date timezone] "GET /url4   HTTP/1.1" "-" "-" "-" "-" "-" "-" "-" 0.4
-1.1.1.1 - - [date timezone] "GET /url5   HTTP/1.1" "-" "-" "-" "-" "-" "-" "-" 0.5
-1.1.1.1 - - [date timezone] "GET /url5   HTTP/1.1" "-" "-" "-" "-" "-" "-" "-" 0.6
+1.1.1.1 - - [date timezone] "GET /урл5   HTTP/1.1" "-" "-" "-" "-" "-" "-" "-" 0.5
+1.1.1.1 - - [date timezone] "GET /урл5   HTTP/1.1" "-" "-" "-" "-" "-" "-" "-" 0.6
 1.1.1.1 - - [date timezone] "GET /url4   HTTP/1.1" "-" "-" "-" "-" "-" "-" "-" invalid
 1.1.1.1 - - [date timezone] "GET invalid HTTP/1.1" "-" "-" "-" "-" "-" "-" "-" 0.5
