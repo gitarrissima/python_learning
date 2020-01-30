@@ -1,8 +1,8 @@
 import json
 import datetime
-import logging
 import hashlib
 import uuid
+import logging
 from optparse import OptionParser
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from scoring import *
@@ -109,9 +109,9 @@ class OnlineScoreRequest(object):
         self.gender = arguments['gender'] if 'gender' in arguments else None
 
         if not self.check_attribute_pairs():
-            raise ValueError(
-                "At least one pair should be defined with not None values: " +
-                "phone-email, first_name-last_name, gender-birthday")
+            msg = f"At least one pair should be not None: phone-email, first_name-last_name, gender-birthday"
+            logging.error(msg)
+            raise ValueError(msg)
 
     def get_not_empty_fields(self) -> list:
         """
@@ -182,21 +182,11 @@ def check_auth(request):
 
 
 def online_score_handler(request, ctx, store):
-    print(f"Request = {request}")
-    try:
-        method_request = MethodRequest(request['body'])
-        if not check_auth(method_request):
-            return {"error": "Forbidden"}, 403
-        if method_request.is_admin:
-            return {"score": 42}, 200
-    except Exception as e:
-        print(e)
-        return str(e), 422
-
     try:
         online_score_params = OnlineScoreRequest(request['body']['arguments'])
     except Exception as e:
-        print(e)
+        logging.error(f"Validation didn't pass. Error: {str(e)}. "
+                      f"Check input params: {request['body']['arguments']}")
         return str(e), 422
 
     ctx['has'] = online_score_params.get_not_empty_fields()
@@ -208,16 +198,15 @@ def online_score_handler(request, ctx, store):
                       first_name=getattr(online_score_params, 'first_name'),
                       last_name=getattr(online_score_params, 'last_name'))
 
-    print(f"Score = {score}")
     return {"score": score}, 200
 
 
 def clients_interests_handler(request, ctx, store):
-    print(f"Request interests = {request}")
     try:
         client_interests_params = ClientsInterestsRequest(request['body']['arguments'])
     except Exception as e:
-        print(e)
+        logging.error(f"Validation didn't pass. Error: {str(e)}. "
+                      f"Check input params: {request['body']['arguments']}")
         return str(e), 422
 
     result = dict()
@@ -225,23 +214,32 @@ def clients_interests_handler(request, ctx, store):
         result[cid] = get_interests(store, cid)
 
     ctx['nclients'] = len(client_interests_params.client_ids)
-    print(f"Result = {result}")
     return result, 200
 
 
 def method_handler(request, ctx, store):
     response, code = None, None
-    if 'method' not in request['body']:
-        return "'method' not found in request", 422
 
-    if request and request['body'] and request['body']['method']:
+    try:
+        method_request = MethodRequest(request['body'])
+        if not check_auth(method_request):
+            logging.error(f"Authentication didn't pass. Check request: {request['body']}")
+            return {"error": "Forbidden"}, 403
+    except Exception as e:
+        logging.error(f"Validation didn't pass. Error: {str(e)}. Check input params: {request['body']}")
+        return str(e), 422
+
+    if request and 'body' in request and 'method' in request['body']:
         method = request['body']['method']
         if method == 'online_score':
+            if method_request.is_admin:
+                return {"score": 42}, 200
             response, code = online_score_handler(request, ctx, store)
         if method == 'clients_interests':
             response, code = clients_interests_handler(request, ctx, store)
     else:
-        # TODO
+        return f"Request is malformed. Check that it contains 'body' and 'body'->'method' attributes. \
+                 Request : {request}", 422
         pass
     return response, code
 

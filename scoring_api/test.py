@@ -74,7 +74,7 @@ class TestSuite(unittest.TestCase):
         {"email": "stupnikov@otus.ru", "gender": 1, "last_name": 2},
     ])
     def test_invalid_score_request(self, arguments):
-        request = {"account": "horns&hoofs_invalid", "login": "h&f", "method": "online_score", "arguments": arguments}
+        request = {"account": "horns&hoofs", "login": "h&f", "method": "online_score", "arguments": arguments}
         self.set_valid_auth(request)
         response, code = self.get_response(request)
         self.assertEqual(api.INVALID_REQUEST, code, arguments)

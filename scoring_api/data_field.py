@@ -8,18 +8,15 @@ logger = logging.getLogger(__name__)
 class DataField:
 
     def __init__(self, required: bool, nullable: bool, validation: Validation = None):
-        # logger.info('DataField __init__')
         self._name = None
         self._required = required
         self._nullable = nullable
         self._validation = validation
 
     def __set_name__(self, owner, name):
-        # logger.info('DataField __set_name__')
         self._name = name
 
     def __get__(self, instance, owner):
-        # logger.info('DataField __get__')
         if instance is None:
             return self
         return instance.__dict__[self._name]
@@ -40,6 +37,5 @@ class DataField:
         self._validation(self._name, value)
 
     def __set__(self, instance, value):
-        # logger.info('DataField __set__')
         self._validate(value)
         instance.__dict__[self._name] = value

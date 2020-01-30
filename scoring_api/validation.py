@@ -83,8 +83,8 @@ class Validation:
         r = re.compile(r'^7\d{10}$')
         if isinstance(value, str) and not r.match(value):
             raise ValueError(
-                f"Parameter '{arg_name}' should contain 11 numeric symbols and start with '7'. \
-                    Actual length is {len(value)}, first symbol is '8'")
+                f"Parameter '{arg_name}' should contain 11 numeric symbols and start with '7'. "
+                f"Actual length is {len(value)}, first symbol is '8'")
 
         return True
 
@@ -170,7 +170,7 @@ class Validation:
         for client_id in value:
             if not isinstance(client_id, int):
                 raise ValueError(
-                    f"Parameter '{arg_name}' should contain only 'int' elements, but it contains '{client_id}', \
-                      which type is {type(value)}")
+                    f"Parameter '{arg_name}' should contain only 'int' elements, but it contains '{client_id}', "
+                    f"which type is {type(value)}")
 
         return True
