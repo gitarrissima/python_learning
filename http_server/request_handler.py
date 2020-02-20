@@ -1,3 +1,4 @@
+import sys
 import os
 from constants import *
 from urllib.parse import unquote
@@ -26,6 +27,9 @@ class RequestHandler:
         relative_file_path = unquote(relative_file_path)
         relative_file_path = relative_file_path.split('?')[0]
         requested_file_path = os.path.join(self.document_root, relative_file_path)
+
+        if self.document_root not in os.path.abspath(requested_file_path):
+            requested_file_path = self.document_root
 
         if os.path.isdir(requested_file_path):
             requested_file_path = os.path.join(requested_file_path, "index.html")
@@ -71,5 +75,7 @@ class RequestHandler:
         :param uri: for example /dir/filename.ext
         :return: string = dir\filename.txt
         """
-        return uri[1:].replace('/', '\\')
+        if 'win' in sys.platform:
+            return uri[1:].replace('/', '\\')
+        return uri[1:]
 

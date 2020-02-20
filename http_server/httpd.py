@@ -12,7 +12,7 @@ class HTTPServer:
     def __init__(self,
                  host: str = 'localhost',
                  port: int = 80,
-                 document_root: str = 'C:\\Users\\Sakharova\\Documents\\Learning\PythonProjects\\python_learning\\http_server\\tests'):
+                 document_root: str = '/root/python_learning/http_server/tests/'):
         self.host = host
         self.port = port
         self.document_root = document_root
@@ -41,7 +41,7 @@ class HTTPServer:
     def start(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((self.host, self.port))
-            s.listen(5)
+            s.listen(100)
             while True:
                 conn, address = s.accept()
                 thread = threading.Thread(target=self.threaded, args=[conn])

@@ -20,6 +20,7 @@ class GetRequestHandler(RequestHandler):
         """
 
         requested_file_path = self._get_requested_file_path()
+        print(requested_file_path)
 
         try:
             with open(requested_file_path, 'rb') as f:
