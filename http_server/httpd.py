@@ -1,6 +1,4 @@
-import sys
 import socket
-import signal
 import threading
 from request_parser import RequestParser
 from get_request_handler import GetRequestHandler
