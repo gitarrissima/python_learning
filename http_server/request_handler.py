@@ -21,6 +21,7 @@ class RequestHandler:
 
         status_line = f"{self.http_version} {UNSUPPORTED} {DESCRIPTION[UNSUPPORTED]} {CRLF}{CRLF}"
         self.connection.sendall(status_line.encode('utf-8'))
+        self._respond_with_headers()
 
     def _get_requested_file_path(self):
         relative_file_path = self._format_relative_path(self.uri)
@@ -47,9 +48,8 @@ class RequestHandler:
 
     def _respond_with_headers(self, file_path: str = None,
                               requested_headers: tuple = ('Date',
-                                                         'Content-Length',
-                                                         'Content-Type',
-                                                         'Server')):
+                                                          'Connection',
+                                                          'Server')):
         """
         This function sends headers to client session
         :param file_path: we need to know file path to generate some headers
@@ -64,8 +64,11 @@ class RequestHandler:
             headers.append(self._header_generator.get_content_type_header(file_path))
         if 'Server' in requested_headers:
             headers.append(self._header_generator.get_server_header())
+        if 'Connection' in requested_headers:
+            headers.append(self._header_generator.get_connection_header())
 
-        headers_payload = (CRLF.join(headers) + CRLF + CRLF).encode('utf-8')
+        end_of_headers = CRLF * 2
+        headers_payload = (CRLF.join(headers) + end_of_headers).encode('utf-8')
         self.connection.sendall(headers_payload)
 
     @staticmethod
@@ -78,4 +81,3 @@ class RequestHandler:
         if 'win' in sys.platform:
             return uri[1:].replace('/', '\\')
         return uri[1:]
-

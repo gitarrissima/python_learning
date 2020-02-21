@@ -16,7 +16,10 @@ class GetRequestHandler(RequestHandler):
     def process(self):
         """
         This function is GET method handlers.
-        Sends to client corresponding response code and requested file
+        Sends to client corresponding:
+        - status line
+        - headers
+        - requested file
         """
 
         requested_file_path = self._get_requested_file_path()
@@ -25,10 +28,15 @@ class GetRequestHandler(RequestHandler):
         try:
             with open(requested_file_path, 'rb') as f:
                 self._respond_with_status_line(OK)
-                self._respond_with_headers(requested_file_path)
+                self._respond_with_headers(file_path=requested_file_path,
+                                           reversed_headers=('Date',
+                                                             'Content-Length',
+                                                             'Content-Type',
+                                                             'Server'))
                 self._respond_with_file(f)
         except PermissionError:
             self._respond_with_status_line(FORBIDDEN)
+            self._respond_with_headers(requested_headers=('Server',))
         except FileNotFoundError:
             self._respond_with_status_line(NOT_FOUND)
             self._respond_with_headers(requested_headers=('Server',))
@@ -44,4 +52,3 @@ class GetRequestHandler(RequestHandler):
             if not part:
                 return
             self.connection.sendall(part)
-

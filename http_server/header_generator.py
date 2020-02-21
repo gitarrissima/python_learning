@@ -26,3 +26,7 @@ class HeaderGenerator:
     @staticmethod
     def get_server_header() -> str:
         return f"Server: {socket.gethostname()}"
+
+    @staticmethod
+    def get_connection_header() -> str:
+        return f"Connection: keep-alive"

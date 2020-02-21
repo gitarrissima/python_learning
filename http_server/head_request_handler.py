@@ -1,3 +1,4 @@
+import os
 from constants import *
 from request_handler import RequestHandler
 
@@ -9,18 +10,20 @@ class HeadRequestHandler(RequestHandler):
     def process(self):
         """
         This function is HEAD method handlers.
-        Sends to client corresponding response code and requested file
+        Sends to client corresponding:
+        - status line
+        - headers
         """
 
         requested_file_path = self._get_requested_file_path()
 
-        try:
-            with open(requested_file_path, 'rb'):
-                self._respond_with_status_line(OK)
-                self._respond_with_headers(requested_file_path)
-        except PermissionError:
-            self._respond_with_status_line(FORBIDDEN)
-        except FileNotFoundError:
+        if os.path.exists(requested_file_path):
+            self._respond_with_status_line(OK)
+            self._respond_with_headers(file_path=requested_file_path,
+                                       reversed_headers=('Date',
+                                                         'Content-Length',
+                                                         'Content-Type',
+                                                         'Server'))
+        else:
             self._respond_with_status_line(NOT_FOUND)
             self._respond_with_headers(requested_headers=('Server',))
-
