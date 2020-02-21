@@ -1,12 +1,13 @@
 from constants import *
 
+
 class RequestParser:
     def __init__(self):
         self.request = b''
         self._request_line = b''
 
     @property
-    def request_line(self):
+    def request_line(self) -> bytes:
         """
         Returns request-line from request if it satisfies structure check:
             Request-Line = Method SP Request-URI SP HTTP-Version CRLF

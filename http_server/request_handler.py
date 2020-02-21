@@ -23,7 +23,16 @@ class RequestHandler:
         self.connection.sendall(status_line.encode('utf-8'))
         self._respond_with_headers()
 
-    def _get_requested_file_path(self):
+    def _get_requested_file_path(self) -> str:
+        """
+        This function calculates full path of requested file:
+        - changes uri path divider '/' to corresponding path divider according to os where server started
+        - removes first '/' from path
+        - performs url decode (unquote)
+        - joins relative path with document_root
+        - check if file is folder and specifies index.html as target file in case if requested entity is folder
+        :return: requested full file path
+        """
         relative_file_path = self._format_relative_path(self.uri)
         relative_file_path = unquote(relative_file_path)
         relative_file_path = relative_file_path.split('?')[0]
