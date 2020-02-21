@@ -29,10 +29,10 @@ class GetRequestHandler(RequestHandler):
             with open(requested_file_path, 'rb') as f:
                 self._respond_with_status_line(OK)
                 self._respond_with_headers(file_path=requested_file_path,
-                                           reversed_headers=('Date',
-                                                             'Content-Length',
-                                                             'Content-Type',
-                                                             'Server'))
+                                           requested_headers=('Date',
+                                                              'Content-Length',
+                                                              'Content-Type',
+                                                              'Server'))
                 self._respond_with_file(f)
         except PermissionError:
             self._respond_with_status_line(FORBIDDEN)

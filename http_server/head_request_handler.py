@@ -20,10 +20,10 @@ class HeadRequestHandler(RequestHandler):
         if os.path.exists(requested_file_path):
             self._respond_with_status_line(OK)
             self._respond_with_headers(file_path=requested_file_path,
-                                       reversed_headers=('Date',
-                                                         'Content-Length',
-                                                         'Content-Type',
-                                                         'Server'))
+                                       requested_headers=('Date',
+                                                          'Content-Length',
+                                                          'Content-Type',
+                                                          'Server'))
         else:
             self._respond_with_status_line(NOT_FOUND)
             self._respond_with_headers(requested_headers=('Server',))
