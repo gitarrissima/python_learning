@@ -68,7 +68,8 @@ class RequestParser:
         """
 
         self.request += data
-        if CRLF in self.request:
-            chunks = self.request.split(CRLF)
+        CRLF_b = CRLF.encode('utf-8')
+        if CRLF_b in self.request:
+            chunks = self.request.split(CRLF_b)
             self._request_line = chunks[0]
 
