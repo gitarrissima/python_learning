@@ -1,5 +1,4 @@
-CRLF = b'\r\n'
-
+from constants import *
 
 class RequestParser:
     def __init__(self):
@@ -8,6 +7,12 @@ class RequestParser:
 
     @property
     def request_line(self):
+        """
+        Returns request-line from request if it satisfies structure check:
+            Request-Line = Method SP Request-URI SP HTTP-Version CRLF
+        Otherwise rises ValueError exception
+        :return: request-line
+        """
         chunks = self._request_line.split()
         if len(chunks) != 3:
             raise ValueError(f"According to RFC request line should be this structure: "
@@ -17,17 +22,26 @@ class RequestParser:
         return self._request_line
 
     @property
-    def method(self):
+    def method(self) -> str:
+        """
+        :return: method from request-line
+        """
         chunks = self.request_line.split()
         return chunks[0].upper().decode('utf-8')
 
     @property
-    def uri(self):
+    def uri(self) -> str:
+        """
+        :return: uri from request-line
+        """
         chunks = self.request_line.split()
         return chunks[1].decode('utf-8')
 
     @property
-    def http_version(self):
+    def http_version(self) -> str:
+        """
+        :return: http_version from request-line
+        """
         chunks = self.request_line.split()
         return chunks[-1].upper().decode('utf-8')
 
@@ -35,6 +49,7 @@ class RequestParser:
     def in_progress(self) -> bool:
         """
         This property identifies is HTTP request parsing done.
+        By now we need only request-line part, so code is very simple because of it
 
         :return:
         False if self._request_line is empty (not assembled)

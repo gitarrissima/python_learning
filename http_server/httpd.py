@@ -18,12 +18,16 @@ class HTTPServer:
         self.document_root = document_root
 
     def threaded(self, connection):
+        """
+        This function handles every connection in separate thread.
+        It makes request parser and starts corresponding request processor
+        :param connection:
+        :return:
+        """
         with connection:
             request_parser = RequestParser()
             while request_parser.in_progress:
                 request_parser.process_new_data(connection.recv(1024))
-
-            print(f"Data received {request_parser.request_line}")
 
             method = request_parser.method
             uri = request_parser.uri
@@ -39,6 +43,11 @@ class HTTPServer:
             request_handler.process()
 
     def start(self):
+        """
+        This function starts HTTP server on configured address and
+        creates a new thread for every new connection
+        :return:
+        """
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((self.host, self.port))
             s.listen(100)
