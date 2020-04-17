@@ -1,0 +1,2 @@
+[Default]
+character=B
